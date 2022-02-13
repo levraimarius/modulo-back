@@ -12,16 +12,13 @@ services:
       # - /srv/app/var
     environment:
       APP_ENV: dev
+    links:
+      - mailcatcher
 
   caddy:
-    environment:
-      SERVER_NAME: ${SERVER_NAME:-localhost, caddy:80}
-
     volumes:
       - ./docker/caddy/Caddyfile:/etc/caddy/Caddyfile:ro
       - ./public:/srv/app/public:ro
-    ports:
-      - '8080:80'
 
 ###> symfony/mercure-bundle ###
 ###< symfony/mercure-bundle ###
@@ -29,11 +26,13 @@ services:
 ###> doctrine/doctrine-bundle ###
   database:
     ports:
-      - "5432"
+      - "5432:5432"
 ###< doctrine/doctrine-bundle ###
 
 ###> symfony/mailer ###
-  mailer:
+  mailcatcher:
     image: schickling/mailcatcher
-    ports: [1025, 1080]
+    ports:
+      - '1025:1025'
+      - '1080:1080'
 ###< symfony/mailer ###
