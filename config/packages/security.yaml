@@ -15,9 +15,28 @@ security:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
-        main:
+        api:
+            pattern: ^/api/
             stateless: true
             lazy: true
+            provider: app_user_provider
+
+            # activate different ways to authenticate
+            # https://symfony.com/doc/current/security.html#the-firewall
+
+            # https://symfony.com/doc/current/security/impersonating_user.html
+            # switch_user: true
+
+            json_login:
+                check_path: /api/auth-token
+                username_path: uuid
+                password_path: password
+                success_handler: lexik_jwt_authentication.handler.authentication_success
+                failure_handler: lexik_jwt_authentication.handler.authentication_failure
+
+            jwt: ~
+        main:
+            pattern: ^/
             provider: app_user_provider
             entry_point: form_login
 
@@ -30,19 +49,10 @@ security:
             form_login:
                 login_path: login
                 check_path: login
-#                enable_csrf: f
+                enable_csrf: true
                 default_target_path: admin
                 username_parameter: uuid
                 password_parameter: password
-
-            json_login:
-                check_path: /auth-token
-                username_path: uuid
-                password_path: password
-                success_handler: lexik_jwt_authentication.handler.authentication_success
-                failure_handler: lexik_jwt_authentication.handler.authentication_failure
-
-            jwt: ~
 
             logout:
                 path: logout
@@ -52,7 +62,7 @@ security:
     access_control:
         - { path: ^/admin, roles: IS_AUTHENTICATED_FULLY }
         - { path: ^/api/docs, roles: PUBLIC_ACCESS } # Allows accessing the Swagger UI
-        - { path: ^/auth-token, roles: PUBLIC_ACCESS }
+        - { path: ^/api/auth-token, roles: PUBLIC_ACCESS }
         - { path: ^/login, roles: PUBLIC_ACCESS }
         - { path: ^/, roles: IS_AUTHENTICATED_FULLY }
 

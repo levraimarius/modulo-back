@@ -15,7 +15,6 @@ use Throwable;
 #[AsCommand(
     name: 'app:user:create',
     description: 'Creates a new user.',
-    //aliases: ['app:add-user'],
     hidden: false
 )]
 class CreateUserCommand extends Command

@@ -29,9 +29,6 @@ class MailBuilder
             $html = $template->renderBlock('html', $parameters);
             $text = $template->renderBlock('text', $parameters);
         } catch (Throwable $exception) {
-            dump($exception);
-            exit;
-
             $this->logger->error(sprintf(
                 'Failed building email (%s at line %u in %s)',
                 $exception->getMessage(),
