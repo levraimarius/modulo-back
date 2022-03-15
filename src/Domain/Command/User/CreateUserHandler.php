@@ -26,7 +26,7 @@ class CreateUserHandler implements MessageHandlerInterface
      */
     public function __invoke(CreateUserCommand $command): void
     {
-        $user = new User($command->getUuid(), $command->getEmail(), $command->getFirstName(), $command->getLastName());
+        $user = new User($command->getUuid(), $command->getEmail(), $command->getFirstName(), $command->getLastName(), $command->getGenre());
         $password = $command->getPassword() ?: $this->passwordGenerator->generate();
         $user->setPassword($this->userPasswordHasher->hashPassword($user, $password));
         if ($command->isAdmin()) {

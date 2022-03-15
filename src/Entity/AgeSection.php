@@ -13,20 +13,29 @@ class AgeSection
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    private $id;
+    private ?string $id = null;
 
     #[ORM\Column(type: 'string', length: 50)]
-    private $name;
+    private string $name;
 
     #[ORM\Column(type: 'string', length: 50)]
-    private $color;
+    private string $color;
+
+    #[ORM\Column(type: 'string', length: 10, nullable: true)]
+    private ?string $code = null;
+
+    public function __construct(string $name, string $color)
+    {
+        $this->name = $name;
+        $this->color = $color;
+    }
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getName(): ?string
+    public function getName(): string
     {
         return $this->name;
     }
@@ -38,7 +47,19 @@ class AgeSection
         return $this;
     }
 
-    public function getColor(): ?string
+    public function getCode(): ?string
+    {
+        return $this->code;
+    }
+
+    public function setCode(?string $code): self
+    {
+        $this->code = $code;
+
+        return $this;
+    }
+
+    public function getColor(): string
     {
         return $this->color;
     }

@@ -19,7 +19,13 @@ class Role
     private ?int $id = null;
 
     #[ORM\Column(type: 'string', length: 100)]
-    private ?string $name = null;
+    private string $name;
+
+    #[ORM\Column(type: 'string', length: 10)]
+    private string $code;
+
+    #[ORM\Column(type: 'string', length: 100, nullable: true)]
+    private ?string $feminineName = null;
 
     #[ORM\ManyToMany(targetEntity: AgeSection::class)]
     private Collection $ageSections;
@@ -27,8 +33,11 @@ class Role
     #[ORM\Column(type: 'string', length: 50, nullable: true)]
     private $icon;
 
-    #[Pure] public function __construct()
+    #[Pure] public function __construct(string $name, string $code, ?string $feminineName = null)
     {
+        $this->name = $name;
+        $this->code = $code;
+        $this->feminineName = $feminineName;
         $this->ageSections = new ArrayCollection();
     }
 
@@ -37,7 +46,7 @@ class Role
         return $this->id;
     }
 
-    public function getName(): ?string
+    public function getName(): string
     {
         return $this->name;
     }
@@ -45,6 +54,30 @@ class Role
     public function setName(string $name): self
     {
         $this->name = $name;
+
+        return $this;
+    }
+
+    public function getCode(): string
+    {
+        return $this->code;
+    }
+
+    public function setCode(string $code): self
+    {
+        $this->code = $code;
+
+        return $this;
+    }
+
+    public function getFeminineName(): ?string
+    {
+        return $this->feminineName;
+    }
+
+    public function setFeminineName(?string $feminineName): self
+    {
+        $this->feminineName = $feminineName;
 
         return $this;
     }

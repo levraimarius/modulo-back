@@ -29,6 +29,7 @@ class CreateUserCommand extends Command
         $this
             ->addArgument('firstName', InputArgument::REQUIRED, 'The first name.')
             ->addArgument('lastName', InputArgument::REQUIRED, 'The last name.')
+            ->addArgument('genre', InputArgument::REQUIRED, 'The user genre (H/F).')
             ->addArgument('uuid', InputArgument::REQUIRED, 'The member number (9 digits).')
             ->addArgument('email', InputArgument::REQUIRED, 'The email address.')
             ->addOption('admin', 'a', InputOption::VALUE_NONE, 'User is admin.')
@@ -42,6 +43,9 @@ class CreateUserCommand extends Command
 
         /** @var string $lastName */
         $lastName = $input->getArgument('lastName');
+
+        /** @var string $egrne */
+        $genre = $input->getArgument('genre');
 
         /** @var string $uuid */
         $uuid = $input->getArgument('uuid');
@@ -63,7 +67,7 @@ class CreateUserCommand extends Command
         ));
 
         try {
-            $this->messageDispatcher->dispatch(new CreateUserDomainCommand($uuid, $email, $firstName, $lastName, null, true));
+            $this->messageDispatcher->dispatch(new CreateUserDomainCommand($uuid, $email, $firstName, $lastName, $genre, null, true));
         } catch (Throwable $exception) {
             $output->writeLn(sprintf(
                 '<fg=red;>failed creating user : %s at line %u in %s.</>',

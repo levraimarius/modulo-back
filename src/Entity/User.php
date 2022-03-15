@@ -19,7 +19,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    private ?int $id;
+    private ?int $id = null;
 
     #[ORM\Column(type: 'string', length: 96, unique: true)]
     private string $uuid;
@@ -39,12 +39,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'string')]
     private string $lastName;
 
-    public function __construct(string $uuid, string $email, string $firstName, string $lastName)
+    #[ORM\Column(type: 'string', length: 1)]
+    private string $genre;
+
+    public function __construct(string $uuid, string $email, string $firstName, string $lastName, string $genre)
     {
         $this->uuid = $uuid;
         $this->email = $email;
         $this->firstName = $firstName;
         $this->lastName = $lastName;
+        $this->genre = $genre;
     }
 
     public function getId(): ?int
@@ -133,6 +137,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setLastName(string $lastName): self
     {
         $this->lastName = $lastName;
+
+        return $this;
+    }
+
+    public function getGenre(): string
+    {
+        return $this->genre;
+    }
+
+    public function setGenre(string $genre): User
+    {
+        $this->genre = $genre;
 
         return $this;
     }

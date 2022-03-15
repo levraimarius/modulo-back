@@ -27,6 +27,12 @@ class CreateUserCommand
     private ?string $lastName;
 
     /**
+     * @Assert\NotBlank()
+     * @Assert\Choice({"H", "F"})
+     */
+    private ?string $genre;
+
+    /**
      * @Assert\Length(min=6, minMessage="Your password should be at least {{ limit }} characters")
      */
     private ?string $password;
@@ -38,6 +44,7 @@ class CreateUserCommand
         string $email = null,
         string $firstName = null,
         string $lastName = null,
+        string $genre = null,
         string $password = null,
         bool $admin = false,
     )
@@ -46,6 +53,7 @@ class CreateUserCommand
         $this->email = $email;
         $this->firstName = $firstName;
         $this->lastName = $lastName;
+        $this->genre = $genre;
         $this->password = $password;
         $this->admin = $admin;
     }
@@ -94,6 +102,18 @@ class CreateUserCommand
     public function setLastName(?string $lastName): self
     {
         $this->lastName = $lastName;
+
+        return $this;
+    }
+
+    public function getGenre(): ?string
+    {
+        return $this->genre;
+    }
+
+    public function setGenre(?string $genre): CreateUserCommand
+    {
+        $this->genre = $genre;
 
         return $this;
     }
