@@ -4,8 +4,6 @@ namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\RoleRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use JetBrains\PhpStorm\Pure;
 
@@ -27,18 +25,18 @@ class Role
     #[ORM\Column(type: 'string', length: 100, nullable: true)]
     private ?string $feminineName = null;
 
-    #[ORM\ManyToMany(targetEntity: AgeSection::class)]
-    private Collection $ageSections;
+    #[ORM\ManyToOne(targetEntity: AgeSection::class)]
+    private AgeSection $ageSection;
 
     #[ORM\Column(type: 'string', length: 50, nullable: true)]
     private $icon;
 
-    #[Pure] public function __construct(string $name, string $code, ?string $feminineName = null)
+    #[Pure] public function __construct(string $name, string $code, AgeSection $ageSection, ?string $feminineName = null)
     {
         $this->name = $name;
         $this->code = $code;
         $this->feminineName = $feminineName;
-        $this->ageSections = new ArrayCollection();
+        $this->ageSection = $ageSection;
     }
 
     public function getId(): ?int
@@ -82,26 +80,14 @@ class Role
         return $this;
     }
 
-    /**
-     * @return Collection<int, AgeSection>
-     */
-    public function getAgeSections(): Collection
+    public function getAgeSection(): AgeSection
     {
-        return $this->ageSections;
+        return $this->ageSection;
     }
 
-    public function addAgeSection(AgeSection $ageSection): self
+    public function setAgeSection(AgeSection $ageSection): self
     {
-        if (!$this->ageSections->contains($ageSection)) {
-            $this->ageSections[] = $ageSection;
-        }
-
-        return $this;
-    }
-
-    public function removeAgeSection(AgeSection $ageSection): self
-    {
-        $this->ageSections->removeElement($ageSection);
+        $this->ageSection = $ageSection;
 
         return $this;
     }

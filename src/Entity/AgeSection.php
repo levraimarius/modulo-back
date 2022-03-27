@@ -5,8 +5,10 @@ namespace App\Entity;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\AgeSectionRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 #[ORM\Entity(repositoryClass: AgeSectionRepository::class)]
+#[UniqueEntity('code')]
 #[ApiResource]
 class AgeSection
 {
@@ -18,15 +20,16 @@ class AgeSection
     #[ORM\Column(type: 'string', length: 50)]
     private string $name;
 
+    #[ORM\Column(type: 'string', length: 10, unique: true)]
+    private string $code;
+
     #[ORM\Column(type: 'string', length: 50)]
     private string $color;
 
-    #[ORM\Column(type: 'string', length: 10, nullable: true)]
-    private ?string $code = null;
-
-    public function __construct(string $name, string $color)
+    public function __construct(string $name, string $code, string $color)
     {
         $this->name = $name;
+        $this->code = $code;
         $this->color = $color;
     }
 

@@ -19,11 +19,11 @@ class RoleFixture extends Fixture
                 'code' => 'DT',
             ],
             [
-                'name' => 'Responsable du pôle pédagogie',
+                'name' => 'Responsable du pôle Pédagogie',
                 'code' => 'RPP',
             ],
             [
-                'name' => 'Responsable du pôle administration et finances',
+                'name' => 'Responsable du pôle Administration et finances',
                 'code' => 'RPAF',
             ],
             [
@@ -46,10 +46,34 @@ class RoleFixture extends Fixture
                 'code' => 'Aum-T',
             ],
             [
-                'name' => 'Accompagnateur pédagogique',
-                'feminineName' => 'Accompagnatrice pédagogique',
+                'name' => 'Accompagnateur pédagogique Farfadets',
+                'feminineName' => 'Accompagnatrice pédagogique Farfadets',
                 'code' => 'AP',
-                'ageSections' => ['FA', 'LJ', 'SG', 'PioK', 'Comp.'],
+                'ageSection' => 'FA',
+            ],
+            [
+                'name' => 'Accompagnateur pédagogique Louveteaux Jeannettes',
+                'feminineName' => 'Accompagnatrice pédagogique Louveteaux Jeannettes',
+                'code' => 'AP',
+                'ageSection' => 'LJ',
+            ],
+            [
+                'name' => 'Accompagnateur pédagogique Scouts Guides',
+                'feminineName' => 'Accompagnatrice pédagogique Scouts Guides',
+                'code' => 'AP',
+                'ageSection' => 'SG',
+            ],
+            [
+                'name' => 'Accompagnateur pédagogique Pionniers Caravelles',
+                'feminineName' => 'Accompagnatrice pédagogique Pionniers Caravelles',
+                'code' => 'AP',
+                'ageSection' => 'PioK',
+            ],
+            [
+                'name' => 'Accompagnateur pédagogique Compagnons',
+                'feminineName' => 'Accompagnatrice pédagogique Compagnons',
+                'code' => 'AP',
+                'ageSection' => 'Comp.',
             ],
             [
                 'name' => 'Chargé de mission territorial',
@@ -75,7 +99,8 @@ class RoleFixture extends Fixture
                 'code' => 'Treso',
             ],
             [
-                'name' => 'Cleophas',
+                'name' => 'Animateur Cléophas',
+                'feminineName' => 'Animatrice Cléophas',
                 'code' => 'Cleo',
             ],
             [
@@ -83,45 +108,68 @@ class RoleFixture extends Fixture
                 'code' => 'Aum',
             ],
             [
-                'name' => 'Accompagnateur Compagnons',
-                'feminineName' => 'Accompagnatrice Compagnons',
-                'code' => 'AccoCo',
-                'ageSections' => ['Comp.'],
+                'name' => 'Responsable Audace',
+                'code' => 'C',
+                'ageSection' => 'Aud.',
             ],
             [
-                'name' => 'Chef d\'unité',
-                'feminineName' => 'Cheftaine d\'unité',
-                'code' => 'C',
-                'ageSections' => ['LJ', 'SG', 'PioK'],
+                'name' => 'Parent animateur Farfadets',
+                'code' => 'PAF',
+                'ageSection' => 'FA',
             ],
             [
                 'name' => 'Responsable Farfadets',
                 'code' => 'RF',
-                'ageSections' => ['FA'],
+                'ageSection' => 'FA',
             ],
             [
-                'name' => 'Chargé de mission',
-                'feminineName' => 'Chargée de mission',
+                'name' => 'Responsable d\'unité Louveteaux Jeannettes',
+                'code' => 'C',
+                'ageSection' => 'LJ',
+            ],
+            [
+                'name' => 'Responsable d\'unité Scouts Guides',
+                'code' => 'C',
+                'ageSection' => 'SG',
+            ],
+            [
+                'name' => 'Responsable d\'unité Pionniers Caravelles',
+                'code' => 'C',
+                'ageSection' => 'PioK',
+            ],
+            [
+                'name' => 'Accompagnateur Compagnons',
+                'feminineName' => 'Accompagnatrice Compagnons',
+                'code' => 'ACCOCO',
+                'ageSection' => 'Comp.',
+            ],
+            [
+                'name' => 'Chargé de mission groupe',
+                'feminineName' => 'Chargée de mission groupe',
                 'code' => 'CDM',
             ],
             [
-                'name' => 'Impeesa',
-                'code' => 'Imp',
+                'name' => 'Référent technique marin',
+                'feminineName' => 'Référente technique marin',
+                'code' => 'RTM',
+            ],
+            [
+                'name' => 'Membre du réseau Impeesa',
+                'code' => 'Impeesa',
             ],
         ];
 
         foreach ($rolesData as $row) {
-            $role = new Role($row['name'], $row['code'],$row['feminineName'] ?? null);
-            $sections = $row['ageSections'] ?? [false];
-            foreach ($sections as $section) {
-                $ageSectionRef = $section ? sprintf('age-section-%s', $section) : AgeSectionFixture::SUPPORT_ROLE_REF;
-                $ageSection = $this->getReference($ageSectionRef);
-                if (!$ageSection instanceof AgeSection) {
-                    throw new LogicException('Invalid reference to age section');
-                }
-                $role->addAgeSection($ageSection);
+            $section = $row['ageSection'] ?? false;
+            $ageSectionRef = $section ? sprintf('age-section-%s', $section) : AgeSectionFixture::SUPPORT_ROLE_REF;
+            $ageSection = $this->getReference($ageSectionRef);
+            if (!$ageSection instanceof AgeSection) {
+                throw new LogicException('Invalid reference to age section');
             }
+            $role = new Role($row['name'], $row['code'], $ageSection, $row['feminineName'] ?? null);
             $manager->persist($role);
+
+            $this->addReference(sprintf('role-%s-%s', $row['code'], $row['ageSection'] ?? ''), $role);
         }
 
         $manager->flush();

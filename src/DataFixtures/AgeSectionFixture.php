@@ -19,17 +19,17 @@ class AgeSectionFixture extends Fixture
                 'color' => '#3CBE8C',
             ],
             [
-                'name' => 'Louveteaux / Jeannettes',
+                'name' => 'Louveteaux Jeannettes',
                 'code' => 'LJ',
                 'color' => '#E77A3D',
             ],
             [
-                'name' => 'Scouts / Guides',
+                'name' => 'Scouts Guides',
                 'code' => 'SG',
                 'color' => '#2851A3',
             ],
             [
-                'name' => 'Pionniers / Caravelles',
+                'name' => 'Pionniers Caravelles',
                 'code' => 'PioK',
                 'color' => '#CA3534',
             ],
@@ -39,14 +39,20 @@ class AgeSectionFixture extends Fixture
                 'color' => '#1B664E',
             ],
             [
+                'name' => 'Audace',
+                'code' => 'Aud.',
+                'color' => '#F609EF',
+            ],
+            [
                 'name' => 'Fonction support',
+                'code' => 'Sup.',
                 'color' => '#39336D',
                 'ref' => self::SUPPORT_ROLE_REF,
             ],
         ];
 
         foreach ($ageSectionsData as $row) {
-            $ageSection = new AgeSection($row['name'], $row['color']);
+            $ageSection = new AgeSection($row['name'], $row['code'], $row['color']);
             $manager->persist($ageSection);
             $this->addReference($row['ref'] ?? sprintf('age-section-%s', $row['code']), $ageSection);
         }
