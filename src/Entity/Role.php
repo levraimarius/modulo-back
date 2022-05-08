@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\RoleRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use JetBrains\PhpStorm\Pure;
 
@@ -31,12 +33,16 @@ class Role
     #[ORM\Column(type: 'string', length: 50, nullable: true)]
     private $icon;
 
+    #[ORM\ManyToMany(targetEntity: Accreditation::class)]
+    private $accreditations;
+
     #[Pure] public function __construct(string $name, string $code, AgeSection $ageSection, ?string $feminineName = null)
     {
         $this->name = $name;
         $this->code = $code;
         $this->feminineName = $feminineName;
         $this->ageSection = $ageSection;
+        $this->accreditations = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -100,6 +106,30 @@ class Role
     public function setIcon(?string $icon): self
     {
         $this->icon = $icon;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Accreditation>
+     */
+    public function getAccreditations(): Collection
+    {
+        return $this->accreditations;
+    }
+
+    public function addAccreditation(Accreditation $accreditation): self
+    {
+        if (!$this->accreditations->contains($accreditation)) {
+            $this->accreditations[] = $accreditation;
+        }
+
+        return $this;
+    }
+
+    public function removeAccreditation(Accreditation $accreditation): self
+    {
+        $this->accreditations->removeElement($accreditation);
 
         return $this;
     }

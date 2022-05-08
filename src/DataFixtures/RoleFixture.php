@@ -167,9 +167,11 @@ class RoleFixture extends Fixture
                 throw new LogicException('Invalid reference to age section');
             }
             $role = new Role($row['name'], $row['code'], $ageSection, $row['feminineName'] ?? null);
+            $role->addAccreditation($this->getReference(sprintf('accredit-%s', rand(0, 10))));
             $manager->persist($role);
 
             $this->addReference(sprintf('role-%s-%s', $row['code'], $row['ageSection'] ?? ''), $role);
+            $this->setReference(sprintf('role-%s', $row['code']), $role);
         }
 
         $manager->flush();
