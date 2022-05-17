@@ -32,6 +32,8 @@ class CategoryFixture extends Fixture implements DependentFixtureInterface
             $category->addFonction($this->getReference(sprintf('role-%s-%s', $role[$key], '')));
             $category->addFonctionAccreditation($this->getReference(sprintf('role-%s-%s', $role[$key], '')));
             $manager->persist($category);
+
+            $this->addReference(sprintf('category-%s', $i), $category);
         }
 
         $manager->flush();

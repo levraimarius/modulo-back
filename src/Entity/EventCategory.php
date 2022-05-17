@@ -36,10 +36,14 @@ class EventCategory
     #[ORM\Column(type: 'boolean')]
     private $defaultValueIsVisible;
 
+    #[ORM\OneToMany(mappedBy: 'category', targetEntity: Events::class, orphanRemoval: true)]
+    private $events;
+
     public function __construct()
     {
         $this->fonctions = new ArrayCollection();
         $this->fonctionAccreditations = new ArrayCollection();
+        $this->events = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -139,6 +143,36 @@ class EventCategory
     public function setDefaultValueIsVisible(bool $defaultValueIsVisible): self
     {
         $this->defaultValueIsVisible = $defaultValueIsVisible;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Events>
+     */
+    public function getEvents(): Collection
+    {
+        return $this->events;
+    }
+
+    public function addEvent(Events $event): self
+    {
+        if (!$this->events->contains($event)) {
+            $this->events[] = $event;
+            $event->setCategory($this);
+        }
+
+        return $this;
+    }
+
+    public function removeEvent(Events $event): self
+    {
+        if ($this->events->removeElement($event)) {
+            // set the owning side to null (unless already changed)
+            if ($event->getCategory() === $this) {
+                $event->setCategory(null);
+            }
+        }
 
         return $this;
     }

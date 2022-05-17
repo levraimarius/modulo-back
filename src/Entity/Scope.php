@@ -6,9 +6,20 @@ use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\ScopeRepository;
 use Doctrine\ORM\Mapping as ORM;
 use JetBrains\PhpStorm\Pure;
+use App\Controller\DeleteScopeByUser;
 
 #[ORM\Entity(repositoryClass: ScopeRepository::class)]
-#[ApiResource]
+#[ApiResource(itemOperations: [
+    'get',
+    'put',
+    'patch',
+    'delete',
+    'delete_by_user' => [
+        'method' => 'DELETE',
+        'path' => '/scopes/user/{id}',
+        'controller' => DeleteScopeByUser::class
+    ],
+])]
 class Scope
 {
     #[ORM\Id]
