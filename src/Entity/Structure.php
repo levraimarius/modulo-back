@@ -7,7 +7,7 @@ use App\Repository\StructureRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: StructureRepository::class)]
-#[ApiResource]
+#[ApiResource(attributes: ["pagination_client_enabled" => true])]
 class Structure
 {
     #[ORM\Id]

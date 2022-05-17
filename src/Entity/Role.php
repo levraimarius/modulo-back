@@ -10,7 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
 use JetBrains\PhpStorm\Pure;
 
 #[ORM\Entity(repositoryClass: RoleRepository::class)]
-#[ApiResource]
+#[ApiResource(attributes: ["pagination_client_enabled" => true])]
 class Role
 {
     #[ORM\Id]
@@ -36,6 +36,9 @@ class Role
     #[ORM\ManyToMany(targetEntity: Accreditation::class)]
     private $accreditations;
 
+    #[ORM\ManyToMany(targetEntity: Events::class, mappedBy: 'invitedRoles')]
+    private $events;
+
     #[Pure] public function __construct(string $name, string $code, AgeSection $ageSection, ?string $feminineName = null)
     {
         $this->name = $name;
@@ -43,6 +46,7 @@ class Role
         $this->feminineName = $feminineName;
         $this->ageSection = $ageSection;
         $this->accreditations = new ArrayCollection();
+        $this->events = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -130,6 +134,33 @@ class Role
     public function removeAccreditation(Accreditation $accreditation): self
     {
         $this->accreditations->removeElement($accreditation);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Events>
+     */
+    public function getEvents(): Collection
+    {
+        return $this->events;
+    }
+
+    public function addEvent(Events $event): self
+    {
+        if (!$this->events->contains($event)) {
+            $this->events[] = $event;
+            $event->addInvitedRole($this);
+        }
+
+        return $this;
+    }
+
+    public function removeEvent(Events $event): self
+    {
+        if ($this->events->removeElement($event)) {
+            $event->removeInvitedRole($this);
+        }
 
         return $this;
     }

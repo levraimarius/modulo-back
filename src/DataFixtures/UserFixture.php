@@ -11,8 +11,9 @@ use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use LogicException;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 
-class UserFixture extends Fixture
+class UserFixture extends Fixture implements DependentFixtureInterface
 {
     const DEFAULT_PASSWORD = 'password';
 
@@ -70,8 +71,17 @@ class UserFixture extends Fixture
                 $scope = new Scope($user, $structure2, $role2);
                 $manager->persist($scope);
             }
+
+            $this->addReference(sprintf('user-%s', $index), $user);
         }
 
         $manager->flush();
+    }
+
+    public function getDependencies()
+    {
+        return [
+            StructureFixture::class
+        ];
     }
 }
