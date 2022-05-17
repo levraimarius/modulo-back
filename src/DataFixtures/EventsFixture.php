@@ -27,8 +27,8 @@ class EventsFixture extends Fixture implements DependentFixtureInterface
         for ($i=0; $i < 50; $i++) { 
             $event = new Events();
             $event->setTitle('Event'.$i+1);
-            $event->setStartAt(DateTimeImmutable::createFromMutable($faker->datetime()));
-            $event->setEndAt(DateTimeImmutable::createFromMutable($faker->dateTimeBetween($event->getStartAt(), '+3 hours')));
+            $event->setStartAt(DateTimeImmutable::createFromMutable($faker->dateTimeBetween('-6 months', '+1 year')));
+            $event->setEndAt(DateTimeImmutable::createFromMutable($faker->dateTimeBetween($event->getStartAt()->format('Y-m-d H:i:s').'+1 hour',  $event->getStartAt()->format('Y-m-d H:i:s').'+2 days')));
             $event->setDescription($faker->text);
             $event->setCategory($this->getReference(sprintf('category-%s', random_int(0, 10))));
 
