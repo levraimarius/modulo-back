@@ -7,9 +7,13 @@ use App\Repository\EventsRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\DateFilter;
+use ApiPlatform\Core\Annotation\ApiFilter;
+use Symfony\Component\Serializer\Annotation\SerializedName;
 
 #[ORM\Entity(repositoryClass: EventsRepository::class)]
 #[ApiResource]
+#[ApiFilter(DateFilter::class, properties: ['startAt'])]
 class Events
 {
     #[ORM\Id]
@@ -18,9 +22,11 @@ class Events
     private $id;
 
     #[ORM\Column(type: 'datetime_immutable')]
+    #[SerializedName('start')]
     private $startAt;
 
     #[ORM\Column(type: 'datetime_immutable')]
+    #[SerializedName('end')]
     private $endAt;
 
     #[ORM\Column(type: 'string', length: 255)]
