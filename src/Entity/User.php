@@ -15,11 +15,11 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
 use Symfony\Component\Serializer\Annotation\Groups;
 
-#[UniqueEntity(fields: ['uuid'], message: 'There is already an account with this uuid')]
-#[UniqueEntity(fields: ['email'], message: 'There is already an account with this email')]
+#[UniqueEntity(fields: ['uuid'], message: 'Un compte est déjà lié à ce numéro d\'adhérent')]
+#[UniqueEntity(fields: ['email'], message: 'Un compte est déjà lié à cette adresse mail')]
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
-#[ApiResource(attributes: ["pagination_items_per_page" => 10])]
+#[ApiResource(attributes: ["pagination_items_per_page" => 10], denormalizationContext: ['groups' => ['user:write']])]
 #[ApiFilter(SearchFilter::class, properties: ['lastName' => 'partial'])]
 #[ApiFilter(OrderFilter::class, properties: ['id' => 'DESC'])]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
@@ -30,27 +30,39 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?int $id = null;
 
     #[ORM\Column(type: 'string', length: 96, unique: true)]
+    #[Groups(['user:write'])]
     private string $uuid;
 
     #[ORM\Column(type: 'string', length: 200, unique: true)]
+    #[Groups(['user:write'])]
     private string $email;
 
     #[ORM\Column(type: 'json')]
+    #[Groups(['user:write'])]
     private array $roles = [];
 
     #[ORM\Column(type: 'string')]
+    #[Groups(['user:write'])]
     private string $password;
 
     #[ORM\Column(type: 'string')]
+    #[Groups(['user:write'])]
     private string $firstName;
 
     #[ORM\Column(type: 'string')]
+    #[Groups(['user:write'])]
     private string $lastName;
 
     #[ORM\Column(type: 'string', length: 1)]
+    #[Groups(['user:write'])]
     private string $genre;
 
+    #[ORM\OneToMany(targetEntity: Scope::class, mappedBy: "user", orphanRemoval: true, cascade: ["persist"])]
+    #[Groups(['user:write'])]
+    private $scope;
+
     #[ORM\ManyToMany(targetEntity: Events::class, mappedBy: 'invitedPersons')]
+    #[Groups(['user:write'])]
     private $events;
 
     public function __construct(string $uuid, string $email, string $firstName, string $lastName, string $genre)
@@ -60,6 +72,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->firstName = $firstName;
         $this->lastName = $lastName;
         $this->genre = $genre;
+        $this->scope = new ArrayCollection();
         $this->events = new ArrayCollection();
     }
 
@@ -172,6 +185,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function eraseCredentials()
     {
+    }
+
+    /**
+     * @return Collection<int, Scope>
+     */
+    public function getScope(): Collection
+    {
+        return $this->scope;
+    }
+
+    public function addScope(Scope $sc): self
+    {
+        if (!$this->scope->contains($sc)) {
+            $this->scope[] = $sc;
+            $sc->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeScope(Scope $sc): self
+    {
+        if ($this->scope->removeScope($sc)) {
+            // set the owning side to null (unless already changed)
+            if ($sc->getUser() === $this) {
+                $sc->setUser(null);
+            }
+        }
+
+        return $this;
     }
 
     /**
