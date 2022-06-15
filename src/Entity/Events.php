@@ -45,9 +45,11 @@ class Events
     private $description;
 
     #[ORM\ManyToMany(targetEntity: Role::class, inversedBy: 'events')]
+    #[Groups("structure")]
     private $invitedRoles;
 
     #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'events')]
+    #[Groups("structure")]
     private $invitedPersons;
 
     #[ORM\Column(type: 'boolean')]
