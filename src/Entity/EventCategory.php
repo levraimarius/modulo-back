@@ -7,9 +7,13 @@ use App\Repository\EventCategoryRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Core\Annotation\ApiFilter;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: EventCategoryRepository::class)]
 #[ApiResource]
+#[ApiFilter(SearchFilter::class, properties: ['fonctionAccreditations' => 'exact', 'id' => 'exact'])]
 class EventCategory
 {
     #[ORM\Id]
