@@ -10,9 +10,10 @@ use Doctrine\ORM\Mapping as ORM;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\DateFilter;
 use ApiPlatform\Core\Annotation\ApiFilter;
 use Symfony\Component\Serializer\Annotation\SerializedName;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: EventsRepository::class)]
-#[ApiResource]
+#[ApiResource] 
 #[ApiFilter(DateFilter::class, properties: ['startAt'])]
 class Events
 {
@@ -23,35 +24,46 @@ class Events
 
     #[ORM\Column(type: 'datetime_immutable')]
     #[SerializedName('start')]
+    #[Groups("structure")]
     private $startAt;
 
     #[ORM\Column(type: 'datetime_immutable')]
     #[SerializedName('end')]
+    #[Groups("structure")]
     private $endAt;
 
     #[ORM\Column(type: 'string', length: 255)]
+    #[Groups("structure")]
     private $title;
 
     #[ORM\ManyToOne(targetEntity: EventCategory::class, inversedBy: 'events')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups("structure")]
     private $category;
 
     #[ORM\Column(type: 'text')]
     private $description;
 
     #[ORM\ManyToMany(targetEntity: Role::class, inversedBy: 'events')]
+    #[Groups("structure")]
     private $invitedRoles;
 
     #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'events')]
+    #[Groups("structure")]
     private $invitedPersons;
 
     #[ORM\Column(type: 'boolean')]
+    #[Groups("structure")]
     private $isVisible;
+
+    #[ORM\ManyToMany(targetEntity: Structure::class, inversedBy: 'events')]
+    private $linkedStructures;
 
     public function __construct()
     {
         $this->invitedRoles = new ArrayCollection();
         $this->invitedPersons = new ArrayCollection();
+        $this->linkedStructures = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -175,6 +187,30 @@ class Events
     public function setIsVisible(bool $isVisible): self
     {
         $this->isVisible = $isVisible;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Structure>
+     */
+    public function getLinkedStructures(): Collection
+    {
+        return $this->linkedStructures;
+    }
+
+    public function addLinkedStructure(Structure $linkedStructure): self
+    {
+        if (!$this->linkedStructures->contains($linkedStructure)) {
+            $this->linkedStructures[] = $linkedStructure;
+        }
+
+        return $this;
+    }
+
+    public function removeLinkedStructure(Structure $linkedStructure): self
+    {
+        $this->linkedStructures->removeElement($linkedStructure);
 
         return $this;
     }
