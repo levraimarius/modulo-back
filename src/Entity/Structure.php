@@ -19,7 +19,7 @@ class Structure
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    #[Groups(["structure"])]
+    #[Groups(["structure", "scope"])]
     private ?int $id = null;
 
     #[ORM\Column(type: 'string', length: 100)]

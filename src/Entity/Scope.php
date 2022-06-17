@@ -14,22 +14,23 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ApiFilter(SearchFilter::class, properties: ['user.id' => 'exact'])]
 #[ApiResource]
 class Scope
-{
+{   
+    #[Groups(["scope"])]
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
     private ?int $id = null;
 
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: "scopes")]
-    #[Groups(['user:write'])]
+    #[Groups(["user:write"])]
     private User $user;
 
+    #[Groups(["user:write", "scope"])]
     #[ORM\ManyToOne(targetEntity: Structure::class)]
-    #[Groups(['user:write'])]
     private Structure $structure;
 
+    #[Groups(["user:write", "scope"])]
     #[ORM\ManyToOne(targetEntity: Role::class)]
-    #[Groups(['user:write'])]
     private Role $role;
 
     #[ORM\Column(type: 'boolean')]

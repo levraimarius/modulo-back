@@ -19,47 +19,47 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[UniqueEntity(fields: ['email'], message: 'Un compte est déjà lié à cette adresse mail')]
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
-#[ApiResource(attributes: ["pagination_items_per_page" => 10], denormalizationContext: ['groups' => ['user:write']])]
-#[ApiFilter(SearchFilter::class, properties: ['lastName' => 'partial'])]
+#[ApiResource(attributes: ["pagination_items_per_page" => 10], denormalizationContext: ['groups' => ['user:write']], normalizationContext: ['groups' => ['user', 'scope']])]
+#[ApiFilter(SearchFilter::class, properties: ['lastName' => 'partial', 'uuid' => 'exact'])]
 #[ApiFilter(OrderFilter::class, properties: ['id' => 'DESC'])]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    #[Groups("structure")]
+    #[Groups(['structure', 'user'])]
     private ?int $id = null;
 
     #[ORM\Column(type: 'string', length: 96, unique: true)]
-    #[Groups(['user:write'])]
+    #[Groups(['user:write', 'user'])]
     private string $uuid;
 
     #[ORM\Column(type: 'string', length: 200, unique: true)]
-    #[Groups(['user:write'])]
+    #[Groups(['user:write', 'user'])]
     private string $email;
 
     #[ORM\Column(type: 'json')]
-    #[Groups(['user:write'])]
+    #[Groups(['user:write', 'user'])]
     private array $roles = [];
 
     #[ORM\Column(type: 'string')]
-    #[Groups(['user:write'])]
+    #[Groups(['user:write', 'user'])]
     private string $password;
 
     #[ORM\Column(type: 'string')]
-    #[Groups(['user:write'])]
+    #[Groups(['user:write', 'user'])]
     private string $firstName;
 
     #[ORM\Column(type: 'string')]
-    #[Groups(['user:write'])]
+    #[Groups(['user:write', 'user'])]
     private string $lastName;
 
     #[ORM\Column(type: 'string', length: 1)]
-    #[Groups(['user:write'])]
+    #[Groups(['user:write', 'user'])]
     private string $genre;
 
+    #[Groups(['user:write', 'scope', 'user'])]
     #[ORM\OneToMany(targetEntity: Scope::class, mappedBy: "user", orphanRemoval: true, cascade: ["persist"])]
-    #[Groups(['user:write'])]
     private $scope;
 
     #[ORM\ManyToMany(targetEntity: Events::class, mappedBy: 'invitedPersons')]

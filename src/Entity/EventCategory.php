@@ -12,35 +12,43 @@ use ApiPlatform\Core\Annotation\ApiFilter;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: EventCategoryRepository::class)]
-#[ApiResource]
+#[ApiResource( normalizationContext: ['groups' => ['role', 'event_category']])]
 #[ApiFilter(SearchFilter::class, properties: ['fonctionAccreditations' => 'exact', 'id' => 'exact'])]
 class EventCategory
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
+    #[Groups(["event_category"])]
     private $id;
 
     #[ORM\Column(type: 'string', length: 255)]
+    #[Groups(["event_category"])]
     private $label;
 
     #[ORM\Column(type: 'text')]
+    #[Groups(["event_category"])]
     private $description;
 
     #[ORM\Column(type: 'boolean')]
+    #[Groups(["event_category"])]
     private $status;
 
     #[ORM\ManyToMany(targetEntity: Role::class)]
+    #[Groups(["event_category"])]
     private $fonctions;
 
     #[ORM\ManyToMany(targetEntity: Role::class)]
     #[ORM\JoinTable(name: "event_category_accreditation")]
+    #[Groups(["event_category", "role"])]
     private $fonctionAccreditations;
 
     #[ORM\Column(type: 'boolean')]
+    #[Groups(["event_category"])]
     private $defaultValueIsVisible;
 
     #[ORM\OneToMany(mappedBy: 'category', targetEntity: Events::class, orphanRemoval: true)]
+    #[Groups(["event_category"])]
     private $events;
 
     public function __construct()
