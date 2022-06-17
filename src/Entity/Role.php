@@ -13,31 +13,40 @@ use ApiPlatform\Core\Annotation\ApiFilter;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: RoleRepository::class)]
-#[ApiResource(attributes: ["pagination_client_enabled" => true])]
-#[ApiFilter(SearchFilter::class, properties: ['accreditations' => 'exact', 'id' => 'exact'])]
+#[ApiResource(
+    attributes: ["pagination_client_enabled" => true],
+    normalizationContext: ['groups' => ['role']]
+)]
+#[ApiFilter(SearchFilter::class, properties: ['accreditations' => 'exact', 'id' => 'exact', 'name' => 'partial'])]
 class Role
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    #[Groups("structure")]
+    #[Groups(["scope", "structure", "role"])]
     private ?int $id = null;
 
     #[ORM\Column(type: 'string', length: 100)]
+    #[Groups(["role"])]
     private string $name;
 
     #[ORM\Column(type: 'string', length: 10)]
+    #[Groups(["role"])]
     private string $code;
 
     #[ORM\Column(type: 'string', length: 100, nullable: true)]
+    #[Groups(["role"])]
     private ?string $feminineName = null;
 
     #[ORM\ManyToOne(targetEntity: AgeSection::class)]
+    #[Groups(["role"])]
     private AgeSection $ageSection;
 
     #[ORM\Column(type: 'string', length: 50, nullable: true)]
+    #[Groups(["role"])]
     private $icon;
 
+    #[Groups(["role"])]
     #[ORM\ManyToMany(targetEntity: Accreditation::class)]
     private $accreditations;
 
