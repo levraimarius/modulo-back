@@ -19,7 +19,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[UniqueEntity(fields: ['email'], message: 'Un compte est déjà lié à cette adresse mail')]
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
-#[ApiResource(attributes: ["pagination_items_per_page" => 10], denormalizationContext: ['groups' => ['user:write']], normalizationContext: ['groups' => ['user', 'scope']])]
+#[ApiResource(attributes: ["pagination_items_per_page" => 10, "pagination_client_enabled" => true, "force_eager" => false], denormalizationContext: ['groups' => ['user:write'], "enable_max_depth" => true], normalizationContext: ['groups' => ['user', 'scope'], "enable_max_depth" => true])]
 #[ApiFilter(SearchFilter::class, properties: ['lastName' => 'partial', 'uuid' => 'exact'])]
 #[ApiFilter(OrderFilter::class, properties: ['id' => 'DESC'])]
 class User implements UserInterface, PasswordAuthenticatedUserInterface

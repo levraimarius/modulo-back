@@ -13,7 +13,7 @@ use Symfony\Component\Serializer\Annotation\SerializedName;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: EventsRepository::class)]
-#[ApiResource] 
+#[ApiResource(attributes: ["force_eager" => false])] 
 #[ApiFilter(DateFilter::class, properties: ['startAt'])]
 class Events
 {

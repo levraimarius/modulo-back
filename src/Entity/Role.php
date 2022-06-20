@@ -14,8 +14,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: RoleRepository::class)]
 #[ApiResource(
-    attributes: ["pagination_client_enabled" => true],
-    normalizationContext: ['groups' => ['role']]
+    attributes: ["pagination_client_enabled" => true, "force_eager" => false],
+    normalizationContext: ['groups' => ['role'], "enable_max_depth" => true]
 )]
 #[ApiFilter(SearchFilter::class, properties: ['accreditations' => 'exact', 'id' => 'exact', 'name' => 'partial'])]
 class Role
